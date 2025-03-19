@@ -71,6 +71,10 @@ app.post('/login', (req, res) => {
     })
 })
 
+app.post('/logout', (req, res) => {
+    res.cookie('token', "").send();
+});
+
 app.listen(4000, () => {
     console.log("Server running on port 4000");
 });
