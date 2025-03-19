@@ -9,9 +9,11 @@ function Login() {
     //Input states
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [loginError, setLoginErorr] = useState(false);
 
     const user = useContext(UserContext);
 
+    
     function loginUser(e) {
         e.preventDefault();
 
@@ -19,13 +21,21 @@ function Login() {
         axios.post('http://localhost:4000/login', data, {withCredentials:true})
         .then(response => {
             user.setEmail(response.data.email);
+            setEmail("");
+            setPassword("");
+            setLoginError(false);
+        })
+        .catch(() => {
+            setLoginError(true);
         });
     }
 
     return (
         <form action="" onSubmit={e => loginUser(e)}>
-
-            {/*Registration inputs*/}
+            {loginError && (
+                <div>Wrong email/password</div>
+            )}
+            {/*Log in inputs*/}
             <input type="email" placeholder="email" value={email} onChange={e => setEmail(e.target.value)}/><br/>
             <input type="password" placeholder="password" value={password} onChange={e => setPassword(e.target.value)}/><br/>
             <button type="submit">Log in</button>

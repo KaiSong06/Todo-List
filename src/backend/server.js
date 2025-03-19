@@ -10,7 +10,7 @@ import bcrypt from "bcrypt";
 const secret = "secret123"
 
 await mongoose.connect("mongodb://localhost:27017/auth");
-//Connection debugging
+//Connection test
 const db = mongoose.connection;
 db.on("error", console.log);
 
@@ -23,11 +23,13 @@ app.use(cors({
 }))
 
 
+//Server test
 app.get('/', (req, res) => {
     res.send("ok")
     }
 );
 
+//User info
 app.get("/user", (req, res) => {
     const payload = jwt.verify(req.cookies.token, secret);
     User.findById(payload.id)
@@ -36,6 +38,8 @@ app.get("/user", (req, res) => {
     })
 });
 
+
+//User registration with encryption
 app.post('/register', (req, res) => {
     const { email, password } = req.body;
     const hashedPassword = bcrypt.hashSync(password, 10);
@@ -53,6 +57,7 @@ app.post('/register', (req, res) => {
 });
 
 
+//User log in with encryptioin
 app.post('/login', (req, res) => {
     const {email, password} = req.body;
     User.findOne({email})
@@ -67,14 +72,18 @@ app.post('/login', (req, res) => {
                     res.cookie('token', token).json({id:userInfo._id, email: userInfo.email});
                 }
             })
+        } else {
+            res.sendStatus(401);
         }
     })
 })
 
+//Logout
 app.post('/logout', (req, res) => {
     res.cookie('token', "").send();
 });
 
+//Server launch/test
 app.listen(4000, () => {
     console.log("Server running on port 4000");
 });
