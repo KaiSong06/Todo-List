@@ -4,6 +4,9 @@ import cookieParser from "cookie-parser";
 import mongoose from "mongoose";
 import User from "./models/User.js"
 import cors from "cors";
+import jwt from "jsonwebtoken";
+
+const secret = "secret123"
 
 await mongoose.connect("mongodb://localhost:27017/auth");
 //Connection debugging
@@ -24,16 +27,35 @@ app.get('/', (req, res) => {
     }
 );
 
-app.post('/register', (req, res) => {
+app.get("/user", (req, res) => {
+    const payload = jwt.verify(req.cookies.token, secret);
+    User.findById(payload.id)
+    .then(userInfo => {
+        res.json({id:userInfo._id, email: userInfo.email});
+    })
+}); 
+
+app.post('/Legister', (req, res) => {
     const {email, password} = req.body;
     const user = new User({password, email});
     user.save().then(userInfo => {
-        console.log(userInfo)
-        res.send("");
+        jwt.sign({id: userInfo._id, email:userInfo.email}, secret, (err, token) => {
+            if (err) {
+                console.log(err);
+                res.sendStatus(500);
+            } else {
+                res.cookie("token", token).json({id: userInfo._id, email: userInfo.email});
+            }
+        })
     })
     }
 )
 
+
+app.post('/Login', (req, res) => {
+    const {email, password} = req.body;
+    User.finOne({})
+})
 
 app.listen(4000, () => {
     console.log("Server running on port 4000");

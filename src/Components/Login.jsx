@@ -4,7 +4,7 @@ import axios from "axios";
 import UserContext from "./Context";
 
 
-function Register() {
+function Login() {
 
     //Input states
     const [email, setEmail] = useState('')
@@ -12,11 +12,11 @@ function Register() {
 
     const user = useContext(UserContext);
 
-    function registerUser(e) {
+    function loginUser(e) {
         e.preventDefault();
 
         const data = {email, password};
-        axios.post('http://localhost:4000/register', data, {withCredentials:true})
+        axios.post('http://localhost:4000/login', data, {withCredentials:true})
         .then(response => {
             user.setEmail(response.data.email);
         });
@@ -28,9 +28,9 @@ function Register() {
             {/*Registration inputs*/}
             <input type="email" placeholder="email" value={email} onChange={e => setEmail(e.target.value)}/><br/>
             <input type="password" placeholder="password" value={password} onChange={e => setPassword(e.target.value)}/><br/>
-            <button type="submit">Register</button>
+            <button type="submit">Log in</button>
         </form>
     )
 }
 
-export default Register;
+export default Login;
