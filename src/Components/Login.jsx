@@ -23,7 +23,7 @@ function Login() {
     }
 
     return (
-        <form action="" onSubmit={e => registerUser(e)}>
+        <form action="" onSubmit={e => loginUser(e)}>
 
             {/*Registration inputs*/}
             <input type="email" placeholder="email" value={email} onChange={e => setEmail(e.target.value)}/><br/>
